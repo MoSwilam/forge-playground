@@ -1,26 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthClientTwoLegged } from 'forge-apis';
-
-interface Credentials {
-  client_id: string;
-  client_secret: string;
-}
-
-interface Scopes {
-  internal: string[];
-  public: string[];
-}
+import { ICredentials, IScopes } from '../../common/common.types';
 
 @Injectable()
 export class OauthService {
   private logger = new Logger(OauthService.name);
   constructor(private configService: ConfigService) {}
-  private scopes = this.configService.get<Scopes>('scopes');
-  private credentials = this.configService.get<Credentials>('credentials');
+  private scopes = this.configService.get<IScopes>('scopes');
+  private credentials = this.configService.get<ICredentials>('credentials');
   private cache = {};
 
-  getClient(scopes) {
+  getClient(scopes?) {
     const { client_id, client_secret } = this.credentials;
     const { internal } = this.scopes;
     return new AuthClientTwoLegged(
@@ -61,6 +52,7 @@ export class OauthService {
    * @returns Token object: { "access_token": "...", "expires_at": "...", "expires_in": "...", "token_type": "..." }.
    */
   getInternalToken() {
+    console.log('public token is being generated!');
     return this.getToken(this.scopes.internal);
   }
 }

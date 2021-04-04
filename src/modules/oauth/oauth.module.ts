@@ -12,5 +12,6 @@ import configuration from '../../../config/configuration';
   ],
   controllers: [OauthController],
   providers: [OauthService],
+  exports: [OauthService],
 })
 export class OauthModule {}
