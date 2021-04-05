@@ -9,8 +9,9 @@ function launchViewer(urn) {
   Autodesk.Viewing.Initializer(options, () => {
     viewer = new Autodesk.Viewing.GuiViewer3D(
       document.getElementById('forgeViewer'),
-      { extensions: ['Autodesk.DocumentBrowser'] },
+      { extensions: ['MyAwesomeExtension', 'HandleSelectionExtension'] },
     );
+
     viewer.start();
     const documentId = 'urn:' + urn;
     Autodesk.Viewing.Document.load(
@@ -34,8 +35,11 @@ function onDocumentLoadFailure(viewerErrorCode) {
 
 function getForgeToken(callback) {
   fetch('/api/forge/oauth/token').then((res) => {
-    res.json().then((data) => {
-      callback(data.access_token, data.expires_in);
-    });
+    res
+      .json()
+      .then((data) => {
+        callback(data.access_token, data.expires_in);
+      })
+      .catch((e) => console.log);
   });
 }

@@ -13,14 +13,13 @@ $(document).ready(function () {
   });
 
   $('#hiddenUploadField').change(function () {
-    const node = $('#appBuckets').jstree(true).get_selected(true)[0];
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const _this = this;
+    var node = $('#appBuckets').jstree(true).get_selected(true)[0];
+    var _this = this;
     if (_this.files.length == 0) return;
-    const file = _this.files[0];
+    var file = _this.files[0];
     switch (node.type) {
       case 'bucket':
-        const formData = new FormData();
+        var formData = new FormData();
         formData.append('fileToUpload', file);
         formData.append('bucketKey', node.id);
 
@@ -41,7 +40,7 @@ $(document).ready(function () {
 });
 
 function createNewBucket() {
-  const bucketKey = $('#newBucketKey').val();
+  var bucketKey = $('#newBucketKey').val();
   jQuery.post({
     url: '/api/forge/oss/buckets',
     contentType: 'application/json',
@@ -94,7 +93,8 @@ function prepareAppBucketTree() {
     .bind('activate_node.jstree', function (evt, data) {
       if (data != null && data.node != null && data.node.type == 'object') {
         $('#forgeViewer').empty();
-        const urn = data.node.id;
+        var urn = data.node.id;
+        console.log({ urn });
         getForgeToken(function (access_token) {
           jQuery.ajax({
             url:
@@ -103,16 +103,18 @@ function prepareAppBucketTree() {
               '/manifest',
             headers: { Authorization: 'Bearer ' + access_token },
             success: function (res) {
-              if (res.status === 'success') launchViewer(urn);
-              else
+              if (res.status === 'success') {
+                launchViewer(urn);
+              } else {
                 $('#forgeViewer').html(
                   'The translation job still running: ' +
                     res.progress +
                     '. Please try again in a moment.',
                 );
+              }
             },
             error: function (err) {
-              const msgButton =
+              var msgButton =
                 'This file is not translated yet! ' +
                 '<button class="btn btn-xs btn-info" onclick="translateObject()"><span class="glyphicon glyphicon-eye-open"></span> ' +
                 'Start translation</button>';
@@ -125,7 +127,7 @@ function prepareAppBucketTree() {
 }
 
 function autodeskCustomMenu(autodeskNode) {
-  let items;
+  var items;
 
   switch (autodeskNode.type) {
     case 'bucket':
@@ -144,9 +146,7 @@ function autodeskCustomMenu(autodeskNode) {
         translateFile: {
           label: 'Translate',
           action: function () {
-            const treeNode = $('#appBuckets')
-              .jstree(true)
-              .get_selected(true)[0];
+            var treeNode = $('#appBuckets').jstree(true).get_selected(true)[0];
             translateObject(treeNode);
           },
           icon: 'glyphicon glyphicon-eye-open',
@@ -165,8 +165,8 @@ function uploadFile() {
 function translateObject(node) {
   $('#forgeViewer').empty();
   if (node == null) node = $('#appBuckets').jstree(true).get_selected(true)[0];
-  const bucketKey = node.parents[0];
-  const objectKey = node.id;
+  var bucketKey = node.parents[0];
+  var objectKey = node.id;
   jQuery.post({
     url: '/api/forge/modelderivative/jobs',
     contentType: 'application/json',
