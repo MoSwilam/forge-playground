@@ -9,7 +9,13 @@ function launchViewer(urn) {
   Autodesk.Viewing.Initializer(options, () => {
     viewer = new Autodesk.Viewing.GuiViewer3D(
       document.getElementById('forgeViewer'),
-      { extensions: ['MyAwesomeExtension', 'HandleSelectionExtension'] },
+      {
+        extensions: [
+          // 'MyAwesomeExtension',
+          'HandleSelectionExtension',
+          'ModelSummaryExtension',
+        ],
+      },
     );
 
     viewer.start();
